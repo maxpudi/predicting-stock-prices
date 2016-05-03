@@ -8,6 +8,7 @@ import csv
 
 #Set Time Frame
 #(year, month, day)
+PREDICTED ='SPY'
 START_DATE = datetime.datetime(2000, 1, 1)
 END_DATE = datetime.datetime(2016, 3, 20)
 lagTime = 30
@@ -60,7 +61,6 @@ def calcDailyPercentChange(prices):
         .pct_change() \
         .as_matrix()
     deltaPrice = [x[0] for x in df_prices]
-
     return np.array(deltaPrice)
 
 
@@ -113,25 +113,25 @@ def combineTechnicalIndicators(ticker):
     RSI = calcRSI(prices)
 
 
-    if ticker == 'SPY':
+    if ticker == PREDICTED:
         np_prices = np.array(prices)
         label = np.zeros_like(np_prices)
-        print type(label)
 
     #create label for price of SPY
-        for x in np_prices[:-30]:
+        for x in range(len(np_prices[:-lagTime])):
+            print x
             if np_prices[x] < np_prices[x + lagTime]:
                 label[x] = 1
             else:
                 label[x] = 0
-        features = np.column_stack((np_dates, np_prices, percentChange, vol, RSI, label))
-        headers = ['date','price_' + ticker, 'return_'+ ticker, 'vol_'+ ticker, 'RSI_'+ ticker, 'label']
+        features = np.column_stack((np_dates,  percentChange, vol, RSI, label))
+        headers = ['date', 'return_'+ ticker, 'vol_'+ ticker, 'RSI_'+ ticker, 'label']
     else:
         features = np.column_stack((np_dates, percentChange, vol, RSI))
         headers = ['date', 'return_'+ ticker, 'vol_'+ ticker, 'RSI_'+ ticker]
 
     df_features = pd.DataFrame(features, columns=headers)
-    print df_features[90:95]
+    print df_features[25:35]
     return df_features
 
 
@@ -146,6 +146,7 @@ def joinFeatures(tickers):
 
     feature_matrix = reduce(lambda left,right: pd.merge(left,right,on='date'), df_list)
     feature_matrix.drop(feature_matrix.index[:lagTime+1], inplace=True)
+    feature_matrix.drop(feature_matrix.index[-lagTime:], inplace=True)
 
 
     return feature_matrix
