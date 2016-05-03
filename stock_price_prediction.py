@@ -8,6 +8,12 @@ import numpy as np
 import scipy as sp
 import csv
 from pprint import pprint
+from sklearn import linear_model
+from sklearn.metrics import roc_auc_score
+from sklearn.naive_bayes import GaussianNB
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.cross_validation import StratifiedKFold
+
 
 TIME_HORIZON = 30
 
@@ -32,16 +38,14 @@ def loadData():
 
     #create input
     X = np.array(data_df[FEATURES].values)
+    #create output
     y = np.array(data_df[LABEL].values)
 
     print X[-5:]
     print y[-5:]
 
+    return X , y
 
-
-
-
-    # return feature_matrix
 
 
 def main():

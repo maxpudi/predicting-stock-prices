@@ -35,7 +35,7 @@ def getHistoricalData(ticker):
         df = web.DataReader(ticker, 'yahoo', START_DATE, END_DATE)
         # Date (index), Open, High, Low, Close, Volume, Adj Close
         #process data ahead of time
-        df = df.ix[:,[-1]]
+        #df = df.ix[:,[-1]]
         filename = ticker + '.csv'
         df.to_csv(filename, sep = ',')
 
@@ -148,7 +148,7 @@ def joinFeatures(tickers):
     feature_matrix.drop(feature_matrix.index[:lagTime+1], inplace=True)
     feature_matrix.drop(feature_matrix.index[-lagTime:], inplace=True)
 
-
+    print feature_matrix
     return feature_matrix
 
 
